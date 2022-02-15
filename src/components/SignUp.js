@@ -1,24 +1,23 @@
 import { useState } from "react";
-import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
+import { useNavigate } from "react-router-dom";
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(email, password);
-
     //ユーザー登録処理
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        console.log(userCredential.user);
-        setEmail("");
-        setPassword("");
+        navigate("/");
       })
       .catch((error) => {
-        console.log(error);
+        setError(error.message);
       });
   };
   const handleChangeEmail = (event) => {
@@ -31,6 +30,7 @@ const SignUp = () => {
   return (
     <div>
       <h1>ユーザ登録</h1>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
       <form onSubmit={handleSubmit}>
         <div>
           <label>メールアドレス</label>
