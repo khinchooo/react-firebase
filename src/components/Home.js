@@ -13,7 +13,8 @@ import { collection,
   where,
   query,
   updateDoc,
-  getDocs } from 'firebase/firestore';
+  getDocs, 
+  orderBy} from 'firebase/firestore';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -26,10 +27,16 @@ const Home = () => {
   const [users, setUsers] = useState([]);
   useEffect(() => {
     const usersCollectionRef = collection(db, 'users');
+    const q = query(
+      usersCollectionRef,
+      where("admin", "==", true),
+      orderBy('name', 'desc'),
+      // limit(3)
+    );
     // getDocs(usersCollectionRef).then((querySnapshot) => {
     //   setUsers(querySnapshot.docs.map((doc) => doc.data()))
     // });
-    const unsub = onSnapshot(usersCollectionRef, (querySnap) => {
+    const unsub = onSnapshot(q, (querySnap) => {
       setUsers(querySnap.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
     });
     return unsub;
