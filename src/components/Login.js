@@ -1,7 +1,10 @@
 import { useState } from "react";
-import { Link, useNavigate, Navigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
+import { Button, Box, Container, TextField, Avatar, Typography, CssBaseline } from "@mui/material";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -22,37 +25,63 @@ const Login = () => {
     setPassword(event.currentTarget.value)
   };
 
+  const theme = createTheme();
   return (
-    <div>
-    <h1>ログイン</h1>
-    {error && <p style={{ color: 'red' }}>{error}</p>}
-    <form onSubmit={handleSubmit}>
-      <div>
-          <label>メールアドレス</label>
-          <input
-            type="email"
-            name="email"
-            placeholder="email"
-            onChange={(event) => handleChangeEmail(event)}
-          />
-        </div>
-        <div>
-          <label>パスワード</label>
-          <input
-            type="password"
-            name="password"
-            onChange={(event) => handleChangePassword(event)}
-          />
-        </div>
-        <div>
-          <button>ログイン</button>
-        </div>
-        <div>
-        ユーザ登録は
-          <Link to={'/signup'}>こちら</Link>から
-        </div>
-    </form>
-    </div>
+    <ThemeProvider theme={theme}>
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <Box
+          sx={{
+            marginTop: 8,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <Avatar sx={{ m: 1, bgcolor: 'secondary.main'}}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            ログイン
+          </Typography>
+          {error && <p style={{ color: 'red' }}>{error}</p>}
+          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1}}>
+            <TextField
+              type="email"
+              name="email"
+              placeholder="email"
+              onChange={handleChangeEmail}
+              fullWidth
+              margin="normal"
+              label="メールアドレス"
+              required
+              autoFocus
+            />
+            <TextField
+              type="password"
+              name="password"
+              onChange={handleChangePassword}
+              fullWidth
+              margin="normal"
+              label="パスワード"
+              required
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              ログイン
+            </Button>
+            <div>
+            ユーザ登録は
+              <Link to={'/signup'}>こちら</Link>から
+            </div>
+            </Box>
+        </Box>
+      </Container>
+    </ThemeProvider>
   );
 };
 

@@ -15,6 +15,19 @@ import { collection,
   updateDoc,
   getDocs, 
   orderBy} from 'firebase/firestore';
+import {
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Button,
+  Checkbox,
+  styled,
+  tableCellClasses} from "@mui/material";
+import { AdminPanelSettings, AdminPanelSettingsOutlined } from "@mui/icons-material";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -85,7 +98,20 @@ const Home = () => {
       admin: checked,
     });
   };
-
+  const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    [`&:${tableCellClasses.head}`]: {
+      backgroundColor: theme.palette.common.black,
+      color: theme.palette.common.white,
+    },
+    [`&.${tableCellClasses.body}`]: {
+      fontSize: 14,
+    },
+  }));
+  const StyledTableRow = styled(TableRow)(({ theme }) => ({
+    '&:nth-of-type(odd)': {
+      backgroundColor: theme.palette.action.hover,
+    }
+  }));
   if (!user) {
     return <Navigate to="/login" />;
   } else {
@@ -97,6 +123,55 @@ const Home = () => {
         </div>
         <div>
           <button onClick={dbTest}>TEST</button>
+
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <StyledTableRow>
+                  <StyledTableCell>Name</StyledTableCell>
+                  <StyledTableCell>Delete(id)</StyledTableCell>
+                  <StyledTableCell>Delete(Name)</StyledTableCell>
+                  <StyledTableCell>Admin?</StyledTableCell>
+                </StyledTableRow>
+              </TableHead>
+              <TableBody>
+                {users.map((user) => (
+                  <StyledTableRow key={user.id}>
+                    <StyledTableCell>{user.name}</StyledTableCell>
+                    <StyledTableCell>
+                      <Button
+                        variant="outlined"
+                        onClick={() => deleteUser(user.id)}
+                        >
+                          削除
+                      </Button>
+                    </StyledTableCell>
+                    <StyledTableCell>
+                      <Button
+                        variant="outlined"
+                        color="secondary"
+                        onClick={() => deleteUserByName(user.name)}
+                        style={{ color: 'red' }}
+                      >
+                        削除
+                      </Button>
+                    </StyledTableCell>
+                    <StyledTableCell>
+                    <Checkbox
+                        name="admin"
+                        onChange={(event) =>
+                          changeAdmin(user.id, event.target.checked)}
+                        checked={user.admin}
+                        icon={<AdminPanelSettingsOutlined/>}
+                        checkedIcon={<AdminPanelSettings />}
+                        />
+                    </StyledTableCell>
+                  </StyledTableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+
           {users.map((user) => (
             <div key={user.id}>
               <span>{user.name}</span>
